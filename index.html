@@ -11,12 +11,12 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      background: #fff5f8;
       color: #222;
     }
 
     header {
-      background: #ee4d2d;
+      background: #f8bbd0;
       color: white;
       padding: 20px 15px;
     }
@@ -28,13 +28,15 @@
       margin: auto;
       padding: 16px;
     }
-
-    .card {
-      background: white;
-      padding: 18px;
-      border-radius: 10px;
-      margin-bottom: 16px;
-    }
+    
+.card {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  border: 1px solid #f8dce6;
+  box-shadow: 0 3px 10px rgba(180, 90, 120, 0.08);
+}
 
     input, button {
       width: 100%;
@@ -47,11 +49,17 @@
     input { border: 1px solid #ccc; }
 
     button {
-      border: 0;
-      background: #ee4d2d;
-      color: white;
-      cursor: pointer;
-    }
+  border: 0;
+  background: #ec80a8;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #d96591;
+}
 
     button:disabled {
       opacity: 0.6;
