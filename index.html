@@ -1,72 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cali Marketplace</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;color:#222}
-header{background:#ee4d2d;color:white;padding:18px 14px}
-header h1{margin:0 0 12px;font-size:25px}
-header p{margin:0}
-.search{width:100%;padding:12px;border:0;border-radius:6px;margin-top:14px;font-size:16px}
-nav{display:flex;gap:8px;padding:12px;overflow:auto;background:white}
-button,.btn{border:0;padding:11px 14px;border-radius:6px;background:#ee4d2d;color:white;font-size:14px;cursor:pointer}
-nav button{white-space:nowrap}
-main{padding:14px;max-width:1000px;margin:auto}
-h2{font-size:20px}
-.categories{display:flex;gap:8px;overflow:auto;padding-bottom:12px}
-.categories button{background:white;color:#333;border:1px solid #ddd}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.card{background:white;border-radius:8px;overflow:hidden;padding-bottom:12px}
-.photo{height:130px;background:#ffe5dd;display:flex;align-items:center;justify-content:center;font-size:45px}
-.card h3{font-size:15px;margin:10px}
-.price{color:#ee4d2d;font-weight:bold;margin:10px}
-.card p{font-size:12px;margin:10px;color:#666}
-.card button{margin:0 10px}
-.panel{background:white;padding:16px;border-radius:8px;margin-top:16px}
-input,select,textarea{width:100%;padding:11px;margin:6px 0 12px;border:1px solid #ccc;border-radius:5px;font-size:15px}
-footer{text-align:center;padding:25px;color:#777;font-size:12px}
-.hidden{display:none}
-@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.photo{height:170px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cali Marketplace</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    header {
+      background: #ee4d2d;
+      color: white;
+      padding: 20px 15px;
+    }
+
+    header h1 { margin: 0 0 8px; }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    input { border: 1px solid #ccc; }
+
+    button {
+      border: 0;
+      background: #ee4d2d;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .secondary {
+      background: #333;
+    }
+
+    .status {
+      overflow-wrap: anywhere;
+      font-size: 14px;
+    }
+
+    .hidden { display: none; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .muted { color: #666; }
+
+    @media (min-width: 650px) {
+      .product-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header>
-<h1>🛍️ Cali Marketplace</h1>
-<p>Your finds, your style, your marketplace.</p>
-<input id="search" class="search" placeholder="Search products..." oninput="renderProducts()">
-</header>
+  <header>
+    <h1>🛍️ Cali Marketplace</h1>
+    <p>Your finds, your style, your marketplace.</p>
+  </header>
 
-<nav>
-<button onclick="showPage('shop')">Shop</button>
-<button onclick="showPage('sell')">Become a Seller</button>
-<button onclick="showPage('orders')">My Orders</button>
-<button onclick="showPage('admin')">Admin Demo</button>
-</nav>
+  <main>
+    <section class="card">
+      <h2>Welcome to Cali Marketplace</h2>
+      <p id="connectionStatus" class="status">
+        Checking connection settings...
+      </p>
+    </section>
 
-<main>
-<section id="shop">
-<h2>Shop by Category</h2>
-<div class="categories" id="categories"></div>
-<h2>Featured Products</h2>
-<div class="grid" id="products"></div>
-</section>
+    <section class="card" id="authCard">
+      <h2>Customer Account</h2>
+      <p>Register or log in to your account.</p>
 
-<section id="sell" class="hidden panel">
-<h2>Seller Application</h2>
-<p>Apply to sell on Cali Marketplace. Applications must be approved by the admin.</p>
-<form id="sellerForm">
-<label>Your name</label><input id="sellerName" required>
-<label>Email</label><input id="sellerEmail" type="email" required>
-<label>Store name</label><input id="storeName" required>
-<label>What do you want to sell?</label><textarea id="sellerDescription" required></textarea>
-<button type="submit">Submit Application</button>
-</form>
-<div id="sellerMessage"></div>
-</section>
+      <form id="authForm">
+        <input
+          id="email"
+          type="email"
+          placeholder="Email address"
+          autocomplete="email"
+          required
+        >
 
-<section id="orders" class="hidden panel">
-<h2>My Orders</h2>
-<p id="orderMessage">No demo orders yet.</
+        <input
+          id="password"
+          type="password"
+          placeholder="Password (at least 8 characters)"
+          autocomplete="current-password"
+          minlength="8"
+          required
+        >
+
+        <button type="submit" id="loginButton">
+          Log In
+        </button>
+
+        <button type="button" id="registerButton" class="secondary">
+          Create Account
+        </button>
+      </form>
+
+      <p id="authMessage" class="status" role="status"></p>
+    </section>
+
+    <section class="card hidden" id="accountCard">
+      <h2>Your Account</h2>
+      <p id="accountEmail"></p>
+      <button type="button" id="logoutButton" class="secondary">
+        Log Out
+      </button>
+    </section>
+
+    <section class="card">
+      <h2>Shop Products</h2>
+      <p class="muted">
+        Product listings will appear here after we connect your
+        database and confirm its product fields and access policies.
+      </p>
+      <div id="products" class="product-grid"></div>
+    </section>
+
+    <footer class="muted" style="text-align:center;padding:20px">
+      Cali Marketplace · Built with care
+    </footer>
+  </main>
+
+  <script type="module">
+    import { createClient } from
+      "https://esm.sh/@supabase/supabase-js@2";
+
+    // Replace these two values with your own Supabase details.
+    const SUPABASE_URL = "https://esm.sh/@supabase/supabase-js@2";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_v8y9u_XEbGxUyg3_2x90hA_MBXAWN2i";
+
+    const status = document.getElementById("connectionStatus");
+    const authMessage = document.getElementById("authMessage");
+    const authCard = document.getElementById("authCard");
+    const accountCard = document.getElementById("accountCard");
+    const authForm = document.getElementById("authForm");
+    const loginButton = document.getElementById("loginButton");
+    const registerButton = document.getElementById("registerButton");
+
+    let supabase = null;
+
+    function showMessage(element, message) {
+      element.textContent = message;
+    }
+
+    function showSignedInUser(user) {
+      if (user) {
+        authCard.classList.add("hidden");
+        accountCard.classList.remove("hidden");
+        document.getElementById("accountEmail").textContent =
+          "Signed in as " + user.email;
+      } else {
+        accountCard.classList.add("hidden");
+        authCard.classList.remove("hidden");
+      }
+    }
+
+    if (
+      SUPABASE_URL.startsWith("https://") &&
+      !SUPABASE_URL.includes("PASTE_") &&
+      SUPABASE_PUBLISHABLE_KEY &&
+      !SUPABASE_PUBLISHABLE_KEY.includes("PASTE_")
+    ) {
+      try {
+        supabase = createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+        showMessage(status, "Supabase client initialized.");
+
+        const { data, error } = await supabase.auth.getSession();
+
+        if (error) throw error;
+
+        showSignedInUser(data.session?.user ?? null);
+
+        supabase.auth.onAuthStateChange((_event, session) => {
+          showSignedInUser(session?.user ?? null);
+        });
+      } catch (error) {
+        showMessage(status, "Connection setup error: " + error.message);
+      }
+    } else {
+      showMessage(
+        status,
+        "Setup needed: add your Supabase Project URL and publishable key."
+      );
+    }
+
+    authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!supabase) {
+        showMessage(authMessage, "Please finish Supabase setup first.");
+        return;
+      }
+
+      loginButton.disabled = true;
+      registerButton.disabled = true;
+      showMessage(authMessage, "Logging in...");
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: document.getElementById("email").value.trim(),
+          password: document.getElementById("password").value
+        });
+
+        if (error) throw error;
+
+        showSignedInUser(data.user);
+        showMessage(authMessage, "You are logged in!");
+      } catch (error) {
+        showMessage(authMessage, error.message);
+      } finally {
+        loginButton.disabled = false;
+        registerButton.disabled = false;
+      }
+    });
+
+    registerButton.addEventListener("click", async () => {
+      if (!supabase) {
+        showMessage(authMessage, "Please finish Supabase setup first.");
+        return;
+      }
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || password.length < 8) {
+        showMessage(
+          authMessage,
+          "Enter a valid email and a password with at least 8 characters."
+        );
+        return;
+      }
+
+      loginButton.disabled = true;
+      registerButton.disabled = true;
+      showMessage(authMessage, "Creating your account...");
+
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        if (data.session) {
+          showSignedInUser(data.user);
+          showMessage(authMessage, "Your account has been created!");
+        } else {
+          showMessage(
+            authMessage,
+            "Registration submitted. Check your email to confirm your account."
+          );
+        }
+      } catch (error) {
+        showMessage(authMessage, error.message);
+      } finally {
+        loginButton.disabled = false;
+        registerButton.disabled = false;
+      }
+    });
+
+    document.getElementById("logoutButton").addEventListener(
+      "click",
+      async () => {
+        if (!supabase) return;
+
+        const { error } = await supabase.auth.signOut();
+
+        if (error) {
+          showMessage(authMessage, error.message);
+          return;
+        }
+
+        showSignedInUser(null);
+        showMessage(authMessage, "You have logged out.");
+      }
+    );
+  </script>
+</body>
+</html>
